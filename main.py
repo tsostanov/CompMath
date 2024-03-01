@@ -14,6 +14,7 @@ def matrix_printer(matrix):
         print(" ".join(str(elem).rjust(max_width) for elem in line))
 
 
+# Критерий по абсолютным отклонениям
 accuracy = float(input('Введите точность:\n'))
 
 matrix = []
@@ -40,23 +41,6 @@ while True:
         print("Некорректный режим. Пожалуйста, выберите 1 или 2.")
 
 
-def diagonal_form(matrix):
-    max_index = []
-    for line in matrix:
-        max_line = max(line[:-1])
-        if max_line > (sum(line[:-1]) - max_line):
-            index_line = line.index(max_line)
-            if index_line not in max_index:
-                max_index.append(index_line)
-    if len(max_index) == len(matrix):
-        diagonal_matrix = []
-        for i in max_index:
-            diagonal_matrix.append(matrix[i])
-        return diagonal_matrix
-    else:
-        return 'Матрицу нельзя привести к диагональному преобладанию'
-
-
 correct = method.correction_check(matrix)
 print(correct)
 if correct == 'Некорректная матрица':
@@ -73,8 +57,11 @@ else:
     print('Диагональная форма матрицы:')
     matrix_printer(matrix)
 
-equations = method.solve_diagonal_system(matrix)
-print('Вектор неизвестных:')
+equations, inition_approximation = method.solve_diagonal_system(matrix)
+print('Матрица коэффициентов преобразованной системы:')
 matrix_printer(equations)
-# for eq in equations:
-#     print(eq)
+print('Вектор правых частей преобразованной системы:')
+matrix_printer(inition_approximation)
+
+# За начальное приближение возьмем вектор правых частей
+method.simple_optimizations(equations, inition_approximation, accuracy)
