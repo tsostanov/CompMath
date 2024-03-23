@@ -54,12 +54,16 @@ def calculate_factor_for_array(arr):
                 factor = max(factor, decimal_digits)
     return 10 ** factor
 
+
 def simple_optimizations(transformed_matrix, start_approximation, accuracy):
     answer = 1
 
-
-    print(" | ".join(["k", *(f"x{i}" for i in range(1, len(start_approximation) + 1)), "difference"]))
-    print(" | ".join(["0"] + [str(item) for sublist in start_approximation for item in sublist] + ["---"]))
+    print(" Метод простых итераций")
+    print(" | ".join(["k ", *(f"x{i}                " for i in range(1, len(start_approximation) + 1)),
+                      "difference"]))
+    print(" | ".join(
+        ["0 "] + [str(item) + (" " * (18 - len(str(item)))) for sublist in start_approximation for item in sublist] + [
+            "---"]))
 
     vector_of_right_parts = start_approximation[:]
     delta_approximation = [[] for _ in range(len(start_approximation))]
@@ -70,14 +74,19 @@ def simple_optimizations(transformed_matrix, start_approximation, accuracy):
             (len(str(number_str)) - str(number_str).index('.') - 1) if '.' in str(number_str) else 0 for number_str in
             coefficients), factor_start])
 
-        delta_approximation[number] = [(sum(int(start_approximation[i][0] * factor) * int(transformed_matrix[number][i] * factor)
-                                           for i in range(len(start_approximation))) + int(vector_of_right_parts[number][0] * (factor ** 2))) / (factor ** 2)]
-
+        delta_approximation[number] = [
+            (sum(int(start_approximation[i][0] * factor) * int(transformed_matrix[number][i] * factor)
+                 for i in range(len(start_approximation))) + int(vector_of_right_parts[number][0] * (factor ** 2))) / (
+                    factor ** 2)]
 
     factor_delta = calculate_factor_for_array(delta_approximation)
     factor_result = max([factor_delta, factor_start])
-    accuracy_check = (max(abs(int(delta_approximation[i][0] * factor_result) - int(start_approximation[i][0] * factor_result)) for i in range(len(delta_approximation))) / factor_result)
-    print(" | ".join([str(answer)] + [str(item) for sublist in delta_approximation for item in sublist] + [str(accuracy_check)]))
+    accuracy_check = (max(
+        abs(int(delta_approximation[i][0] * factor_result) - int(start_approximation[i][0] * factor_result)) for i in
+        range(len(delta_approximation))) / factor_result)
+    print(" | ".join(
+        [str(answer) + " "] + [str(item) + (" " * (18 - len(str(item)))) for sublist in delta_approximation for item in
+                               sublist] + [str(accuracy_check)]))
     while accuracy_check >= accuracy:
         start_approximation = delta_approximation
         answer += 1
@@ -100,6 +109,7 @@ def simple_optimizations(transformed_matrix, start_approximation, accuracy):
             abs(int(delta_approximation[i][0] * factor_result) - int(start_approximation[i][0] * factor_result)) for i
             in range(len(delta_approximation))) / factor_result)
         print(" | ".join(
-            [str(answer)] + [str(item) for sublist in delta_approximation for item in sublist] + [str(accuracy_check)]))
+            [str(answer) + " "] + [str(item) + (" " * (18 - len(str(item)))) for sublist in delta_approximation for item
+                                   in sublist] + [str(accuracy_check)]))
 
-    return answer
+    return answer, delta_approximation

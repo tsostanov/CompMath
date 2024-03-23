@@ -64,4 +64,21 @@ print('Вектор правых частей преобразованной с�
 matrix_printer(inition_approximation)
 
 # За начальное приближение возьмем вектор правых частей
-method.simple_optimizations(equations, inition_approximation, accuracy)
+answer, delta_approximation = method.simple_optimizations(equations, inition_approximation, accuracy)
+
+delta_matrix = [[] for i in range(len(matrix))]
+for number, matrix_list in enumerate(matrix):
+    factor_delta = method.calculate_factor_for_array(delta_approximation)
+    factor_inition = method.calculate_factor_for_array(inition_approximation)
+    factor = max(factor_delta, factor_inition)
+
+    delta_matrix[number] = [(sum(int(delta_approximation[i][0] * factor) * int(matrix[number][i] * factor)
+                                           for i in range(len(delta_approximation))) / (factor ** 2))]
+
+
+print('Проверка')
+matrix_printer(delta_matrix)
+print('Невязка')
+factor = method.calculate_factor_for_array(delta_approximation)
+answer_matrix = [[(delta_matrix[i][0] * factor - matrix[i][-1] * factor) / factor] for i in range(len(delta_matrix))]
+matrix_printer(answer_matrix)
